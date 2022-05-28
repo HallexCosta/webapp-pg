@@ -4,7 +4,7 @@
   "main": "dist/server.js",
   "license": "MIT",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node -r dotenv/config ./dist/cluster.js",
+    "start": "cross-env NODE_ENV=production node -r dotenv/config ./dist/server.js",
     "install:ci": "yarn install --frozen-lock",
     "build": "tsc",
     "start:development:watch": "cross-env NODE_ENV=development nodemon -L",
