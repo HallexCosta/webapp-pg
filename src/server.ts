@@ -3,6 +3,7 @@ import { Pool } from 'pg'
 
 const PORT = process.env.PORT
 const PG_URL = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}`
+console.log('posgres_url', PG_URL)
 
 const pool = new Pool({
   connectionString: PG_URL
