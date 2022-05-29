@@ -18,8 +18,8 @@ async function requestHandler(
   console.log('Calling endpoint', request.url)
 
   try {
-    const client = await pool.connect()
-    //
+    //const client = await pool.connect()
+    
     // define endpoint GET "/"
     if (
       request.method === 'GET'
@@ -36,13 +36,14 @@ async function requestHandler(
       for await (const body of request) {
         const { query } = JSON.parse(body)
 
-        const result = await client.query(query)
-        client.release()
+        const data = { static: true, query }
+        //const result = await client.query(query)
+        //await client.release()
 
-        const data = {
-          query: query,
-          data: result.rows
-        }
+        //const data = {
+        //  query: query,
+        //  data: result.rows
+        //}
       
         console.log(data)
         response.writeHead(200)
