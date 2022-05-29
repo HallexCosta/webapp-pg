@@ -65,6 +65,10 @@ server
     () => console.log(`Listening server on port ${PORT}`)
   )
 
+process.on('unhandledRejection', error => {
+  console.error(error.name, error.message)
+  console.log(error.stack)
+})
 process.on('uncaughtException', error => {
   console.error(error.name, error.message)
   console.log(error.stack)
