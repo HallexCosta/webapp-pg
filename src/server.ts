@@ -5,53 +5,45 @@ const PORT = process.env.PORT || 3333
 const PG_URL = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
 console.log('postgre_url', PG_URL)
 
-//const pool = new Pool({
-//  connectionString: PG_URL
-//})
+const pool = new Pool({
+  connectionString: PG_URL
+})
 
 const server = http.createServer(requestHandler)
 
-function requestHandler(
+async function requestHandler(
   request: http.IncomingMessage,
   response: http.ServerResponse
 ) {
   console.log('Calling endpoint', request.url)
 
   try {
-    //const client = await pool.connect()
-    
-    // define endpoint GET "/"
-    //if (
-    //  request.method === 'GET'
-    //  && request.url.includes('/')
-    //) {
-
-    //  return response.end("I'm alive")
-    //}
 
     // define endpoint POST "/pg"
     if (
       request.method === 'POST'
       && request.url.includes('/pg')
     )  {
-      //for await (const body of request) {
-        //const { query } = JSON.parse(body)
+      const client = await pool.connect()
+      for await (const body of request) {
+        const { query } = JSON.parse(body)
 
-        const data = { static: true }
-        //const result = await client.query(query)
-        //await client.release()
+        const result = await client.query(query)
+        await client.release()
 
-        //const data = {
-        //  query: query,
-        //  data: result.rows
-        //}
+        const data = {
+          query: query,
+          data: result.rows
+        }
       
         console.log(data)
         response.writeHead(200, {
           'Content-Type': 'application/json'
         })
-        return response.end(JSON.stringify(data))
-      //}
+        response.end(JSON.stringify(data))
+
+        return client.close()
+      }
     }
 
     response.writeHead(200, {
