@@ -49,8 +49,9 @@ function requestHandler(
         response.writeHead(200)
         return response.end(JSON.stringify(data))
       //}
-
     }
+
+    return response.end("I'm alive")
   } catch(e) {
     response.writeHead(400)
     return response.end(JSON.stringify({
