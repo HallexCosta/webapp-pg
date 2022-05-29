@@ -1,7 +1,7 @@
 import http from 'node:http'
 //import { Pool } from 'pg'
 
-const PORT = 3333
+const PORT = process.env.PORT || 3333
 const PG_URL = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
 console.log('postgre_url', PG_URL)
 
@@ -48,19 +48,19 @@ function requestHandler(
       
         console.log(data)
         response.writeHead(200, {
-          'Content-Type': 'text/plain'
+          'Content-Type': 'application/json'
         })
         return response.end(JSON.stringify(data))
       //}
     }
 
     response.writeHead(200, {
-      'Content-Type': 'text/plain'
+      'Content-Type': 'application/json'
     })
     return response.end("I'm alive")
   } catch(e) {
     response.writeHead(400, {
-      'Content-Type': 'text/plain'
+      'Content-Type': 'application/json'
     })
     return response.end(JSON.stringify({
       error: e.message
@@ -69,7 +69,7 @@ function requestHandler(
 }
 server
   .listen(
-    3333,
+    PORT,
     () => console.log(`Listening server on port ${PORT}`)
   )
 
