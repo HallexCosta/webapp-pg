@@ -21,6 +21,7 @@ jobs:
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          usedocker: true
         env:
           HD_PORT: ${{ secrets.APP_PORT }}
           HD_DB_HOST: ${{ secrets.DB_HOST }}
