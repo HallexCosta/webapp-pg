@@ -1,2 +1,2 @@
-web: yarn start
+web: ./start.sh 
 worker: start-worker-process
