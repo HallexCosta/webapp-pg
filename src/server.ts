@@ -49,10 +49,13 @@ function requestHandler(
         response.writeHead(200)
         response.end(JSON.stringify(data))
       //}
+
     }
   } catch(e) {
     response.writeHead(400)
-    response.end(e)
+    response.end(JSON.stringify({
+      error: e.message
+    }))
   }
 }
 server
