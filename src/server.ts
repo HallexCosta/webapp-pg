@@ -29,7 +29,7 @@ async function requestHandler(
         const { query } = JSON.parse(body)
 
         const result = await client.query(query)
-        await client.release()
+        client.release()
 
         const data = {
           query: query,
@@ -41,8 +41,6 @@ async function requestHandler(
           'Content-Type': 'application/json'
         })
         response.end(JSON.stringify(data))
-
-        return client.close()
       }
     }
 
