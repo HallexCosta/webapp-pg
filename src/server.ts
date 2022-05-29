@@ -21,12 +21,13 @@ function requestHandler(
     //const client = await pool.connect()
     
     // define endpoint GET "/"
-    if (
-      request.method === 'GET'
-      && request.url.includes('/')
-    ) {
-      return response.end("I'm alive")
-    }
+    //if (
+    //  request.method === 'GET'
+    //  && request.url.includes('/')
+    //) {
+
+    //  return response.end("I'm alive")
+    //}
 
     // define endpoint POST "/pg"
     if (
@@ -46,14 +47,21 @@ function requestHandler(
         //}
       
         console.log(data)
-        response.writeHead(200)
+        response.writeHead(200, {
+          'Content-Type': 'text/plain'
+        })
         return response.end(JSON.stringify(data))
       //}
     }
 
+    response.writeHead(200, {
+      'Content-Type': 'text/plain'
+    })
     return response.end("I'm alive")
   } catch(e) {
-    response.writeHead(400)
+    response.writeHead(400, {
+      'Content-Type': 'text/plain'
+    })
     return response.end(JSON.stringify({
       error: e.message
     }))
