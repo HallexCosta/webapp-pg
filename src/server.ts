@@ -1,5 +1,5 @@
 import http from 'node:http'
-import { Pool } from 'pg'
+//import { Pool } from 'pg'
 
 const PORT = 3333
 const PG_URL = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
@@ -25,7 +25,7 @@ function requestHandler(
       request.method === 'GET'
       && request.url.includes('/')
     ) {
-      response.end("I'm alive")
+      return response.end("I'm alive")
     }
 
     // define endpoint POST "/pg"
@@ -47,20 +47,20 @@ function requestHandler(
       
         console.log(data)
         response.writeHead(200)
-        response.end(JSON.stringify(data))
+        return response.end(JSON.stringify(data))
       //}
 
     }
   } catch(e) {
     response.writeHead(400)
-    response.end(JSON.stringify({
+    return response.end(JSON.stringify({
       error: e.message
     }))
   }
 }
 server
   .listen(
-    process.env.PORT || 3333,
+    3333,
     () => console.log(`Listening server on port ${PORT}`)
   )
 
