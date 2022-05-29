@@ -60,7 +60,7 @@ function requestHandler(
 }
 server
   .listen(
-    3333,
+    process.env.PORT || 3333,
     () => console.log(`Listening server on port ${PORT}`)
   )
 
