@@ -11,7 +11,7 @@ console.log('postgre_url', PG_URL)
 
 const server = http.createServer(requestHandler)
 
-async function requestHandler(
+function requestHandler(
   request: http.IncomingMessage,
   response: http.ServerResponse
 ) {
@@ -33,8 +33,8 @@ async function requestHandler(
       request.method === 'POST'
       && request.url.includes('/pg')
     )  {
-      for await (const body of request) {
-        const { query } = JSON.parse(body)
+      //for await (const body of request) {
+        //const { query } = JSON.parse(body)
 
         const data = { static: true, query }
         //const result = await client.query(query)
@@ -48,7 +48,7 @@ async function requestHandler(
         console.log(data)
         response.writeHead(200)
         response.end(JSON.stringify(data))
-      }
+      //}
     }
   } catch(e) {
     response.writeHead(400)
