@@ -36,7 +36,7 @@ function requestHandler(
       //for await (const body of request) {
         //const { query } = JSON.parse(body)
 
-        const data = { static: true, query }
+        const data = { static: true }
         //const result = await client.query(query)
         //await client.release()
 
