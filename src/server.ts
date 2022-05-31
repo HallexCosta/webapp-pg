@@ -1,13 +1,19 @@
 import http from 'node:http'
 import { Pool } from 'pg'
 
+import { decode, JwtPayload, sign, verify } from 'jsonwebtoken'
+
+type DBConfigs =  {
+  name: string
+  host: string
+  user: string
+  port: number
+  password: string
+}
+
 const PORT = process.env.PORT || 3333
 const PG_URL = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
 console.log('postgre_url', PG_URL)
-
-const pool = new Pool({
-  connectionString: PG_URL
-})
 
 const server = http.createServer(requestHandler)
 
@@ -18,13 +24,59 @@ async function requestHandler(
   console.log('Calling endpoint', request.method, request.url)
 
   try {
+    request.setEncoding('utf-8')
 
     // define endpoint POST "/pg"
     if (
       request.method === 'POST'
+      && request.url.includes('/db-login')
+    ) {
+      for await (const body of request) {
+        const { host, port, name, user, password  } = JSON.parse(body)
+
+        const token = sign(
+          {
+            host,
+            name,
+            user,
+            password,
+            port
+          },
+          '581fe9ce8b1360e7be8b80d416ca37a3',
+          {
+            subject: user
+          }
+        )
+        console.log('token', token)
+        return response.end(JSON.stringify({
+          token
+        }))
+      }
+    }
+
+    if (
+      request.method === 'POST'
       && request.url.includes('/pg')
     )  {
-      request.setEncoding('utf-8')
+      const token = request.headers.token as string
+      if (!token) throw new Error('Token not found')
+
+      const isValid = verify(
+        token,
+        '581fe9ce8b1360e7be8b80d416ca37a3'
+      )
+
+      if (!isValid) throw Error("Token is invalid")
+
+      const { host, user, password, name, port }  = <DBConfigs>decode(
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiZHJvbmEuZGIuZWxlcGhhbnRzcWwuY29tIiwibmFtZSI6Im5hYW56am1sIiwidXNlciI6Im5hYW56am1sIiwicGFzc3dvcmQiOiIwRGE5cTFCd3BoRGcwaGpWNXZmRWNxVGVXVHpsVl9ISSIsInBvcnQiOjU0MzIsImlhdCI6MTY1NDAyMjAzNH0.5zq4F9XAVC3MOmzw0VIMHLgbZ',
+      )
+
+      const pgURL = `postgres://${user}:${password}@${host}:${port}/${name}`
+      const pool = new Pool({
+        connectionString: pgURL
+      })
+
       for await (const body of request) {
         if (!body) throw new Error('Not receive param "query" on body')
 
