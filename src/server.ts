@@ -15,7 +15,7 @@ async function requestHandler(
   request: http.IncomingMessage,
   response: http.ServerResponse
 ) {
-  console.log('Calling endpoint', request.url)
+  console.log('Calling endpoint', request.method, request.url)
 
   try {
 
@@ -24,10 +24,13 @@ async function requestHandler(
       request.method === 'POST'
       && request.url.includes('/pg')
     )  {
-      const client = await pool.connect()
+      request.setEncoding('utf-8')
       for await (const body of request) {
+        if (!body) throw new Error('Not receive param "query" on body')
+
         const { query } = JSON.parse(body)
 
+        const client = await pool.connect()
         const result = await client.query(query)
         client.release()
 
@@ -44,10 +47,10 @@ async function requestHandler(
       }
     }
 
-    response.writeHead(200, {
+    response.writeHead(400, {
       'Content-Type': 'application/json'
     })
-    return response.end("I'm alive")
+    return response.end("Endpoint don't exists")
   } catch(e) {
     response.writeHead(400, {
       'Content-Type': 'application/json'
