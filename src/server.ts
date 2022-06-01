@@ -1,7 +1,7 @@
 import http from 'node:http'
 import { Pool } from 'pg'
 
-import { decode, JwtPayload, sign, verify } from 'jsonwebtoken'
+import { decode, sign, verify } from 'jsonwebtoken'
 
 type DBConfigs =  {
   name: string
