@@ -69,7 +69,7 @@ async function requestHandler(
       if (!isValid) throw Error("Token is invalid")
 
       const { host, user, password, name, port }  = <DBConfigs>decode(
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiZHJvbmEuZGIuZWxlcGhhbnRzcWwuY29tIiwibmFtZSI6Im5hYW56am1sIiwidXNlciI6Im5hYW56am1sIiwicGFzc3dvcmQiOiIwRGE5cTFCd3BoRGcwaGpWNXZmRWNxVGVXVHpsVl9ISSIsInBvcnQiOjU0MzIsImlhdCI6MTY1NDAyMjAzNH0.5zq4F9XAVC3MOmzw0VIMHLgbZ',
+        token,
       )
 
       const pgURL = `postgres://${user}:${password}@${host}:${port}/${name}`

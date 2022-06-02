@@ -7,8 +7,8 @@ const runPrimaryProcess = async () => {
   console.log(`Forking server with ${processesCount} process\n`)
 
   for (let index = 0; index < processesCount; index++) {
-    console.log(`Up first worker ${processId}`)
-    cluster.fork()
+    const fork = cluster.fork()
+    console.log(`Forking ${fork.process.pid} is running`)
   }
 
   cluster.on('exit', (worker, code, signal) => {
