@@ -87,8 +87,6 @@ async function requestHandler(
 
         await pool.end()
 
-        client.release()
-
         const data = {
           query: query,
           data: result.rows
