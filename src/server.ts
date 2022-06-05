@@ -84,6 +84,9 @@ async function requestHandler(
 
         const client = await pool.connect()
         const result = await client.query(query)
+
+        await pool.end()
+
         client.release()
 
         const data = {
