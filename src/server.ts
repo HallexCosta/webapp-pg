@@ -1,5 +1,5 @@
 import http from 'node:http'
-import { Pool } from 'pg'
+import { Client, Pool } from 'pg'
 
 import { decode, sign, verify } from 'jsonwebtoken'
 
@@ -12,8 +12,6 @@ type DBConfigs =  {
 }
 
 const PORT = process.env.PORT || 3333
-const PG_URL = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
-console.log('postgre_url', PG_URL)
 
 const server = http.createServer(requestHandler)
 
@@ -73,20 +71,25 @@ async function requestHandler(
       )
 
       const pgURL = `postgres://${user}:${password}@${host}:${port}/${name}`
-      const pool = new Pool({
+      console.log('pg_url', pgURL)
+
+      const client = new Pool({
         connectionString: pgURL
       })
+      const connection = await client.connect()
 
       for await (const body of request) {
         if (!body) throw new Error('Not receive param "query" on body')
 
         const { query } = JSON.parse(body)
 
-        const client = await pool.connect()
-        const result = await client.query(query)
+        const result = await connection.query(query)
+        // should release connection
+        connection.release()
+        // after end client connection
+        await client.end()
 
-        await pool.end()
-
+        // returning values
         const data = {
           query: query,
           data: result.rows
@@ -96,7 +99,7 @@ async function requestHandler(
         response.writeHead(200, {
           'Content-Type': 'application/json'
         })
-        response.end(JSON.stringify(data))
+        return response.end(JSON.stringify(data))
       }
     }
 
